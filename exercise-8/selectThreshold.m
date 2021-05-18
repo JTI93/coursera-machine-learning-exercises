@@ -22,19 +22,13 @@ for epsilon = min(pval):stepsize:max(pval)
     %               
     % Note: You can use predictions = (pval < epsilon) to get a binary vector
     %       of 0's and 1's of the outlier predictions
-
-    % Apply the threshold to the probabilities
-    pred_y = pval < epsilon;
-    
-    true_pos = sum(yval .* pred_y); % Only one when pval=1 and yval=1
-    false_pos = sum(pred_y - (yval .* pred_y)); % All predicted positive minus the true positives
-    % 1 - pval switches a zero to one and a one to zero
-    false_neg = sum((1 - pred_y) - (1 - pred_y) .* (1 - yval)); % Same method of false positives, but with the switched results
-
-    precision = true_pos / (true_pos + false_pos);
-    recall = true_pos / (true_pos + false_neg);
-    
-    F1 = (2 * precision * recall) / (precision + recall);
+    pred = pval < epsilon
+    tp = sum( (pred==1) & (yval==1) )
+    fp = sum( (pred==1) & (yval==0) )
+    fn = sum( (pred==0) & (yval==1) )
+    prec = tp / (tp + fp)
+    rec = tp / (tp + fn)
+    F1 = (2 * prec * rec) / (prec + rec)
 
     % =============================================================
 
